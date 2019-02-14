@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import signal
 import sys
@@ -103,9 +104,12 @@ class App:
     def test_send_notifications(cls):
         if Config().NOTIFICATION_BY_VOICE_CODE:  # 语音通知
             CommonLog.add_quick_log(CommonLog.MESSAGE_TEST_SEND_VOICE_CODE).flush()
-            Notification.voice_code(Config().NOTIFICATION_VOICE_CODE_PHONE, '张三',
-                                    OrderLog.MESSAGE_ORDER_SUCCESS_NOTIFICATION_OF_VOICE_CODE_CONTENT.format('北京',
-                                                                                                             '深圳'))
+            if Config().NOTIFICATION_VOICE_CODE_TYPE == 'dingxin':
+                voice_content = {'left_station': '广州', 'arrive_station': '深圳', 'set_type': '硬座', 'orderno': 'E123542'}
+            else:
+                voice_content = OrderLog.MESSAGE_ORDER_SUCCESS_NOTIFICATION_OF_VOICE_CODE_CONTENT.format('北京',
+                                                                                                         '深圳')
+            Notification.voice_code(Config().NOTIFICATION_VOICE_CODE_PHONE, '张三', voice_content)
         if Config().EMAIL_ENABLED:  # 邮件通知
             CommonLog.add_quick_log(CommonLog.MESSAGE_TEST_SEND_EMAIL).flush()
             Notification.send_email(Config().EMAIL_RECEIVER, '测试发送邮件', 'By py12306')
@@ -125,6 +129,10 @@ class App:
         if Config().PUSHBEAR_ENABLED:  # PushBear通知
             CommonLog.add_quick_log(CommonLog.MESSAGE_TEST_SEND_PUSH_BEAR).flush()
             Notification.push_bear(Config().PUSHBEAR_KEY, '测试发送消息', 'By py12306')
+
+        if Config().BARK_ENABLED:  # Bark通知
+            CommonLog.add_quick_log(CommonLog.MESSAGE_TEST_SEND_PUSH_BARK).flush()
+            Notification.push_bark('测试发送信息')
 
     @classmethod
     def run_check(cls):

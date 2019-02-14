@@ -27,6 +27,7 @@ class CommonLog(BaseLog):
     MESSAGE_TEST_SEND_TELEGRAM = '正在测试推送到Telegram...'
     MESSAGE_TEST_SEND_SERVER_CHAN = '正在测试发送ServerChan消息...'
     MESSAGE_TEST_SEND_PUSH_BEAR = '正在测试发送PushBear消息...'
+    MESSAGE_TEST_SEND_PUSH_BARK = '正在测试发送Bark消息...'
 
     MESSAGE_CONFIG_FILE_DID_CHANGED = '配置文件已修改，正在重新加载中\n'
     MESSAGE_API_RESPONSE_CAN_NOT_BE_HANDLE = '接口返回错误'
@@ -43,11 +44,20 @@ class CommonLog(BaseLog):
     MESSAGE_SEND_PUSH_BEAR_SUCCESS = '发送成功，请检查微信'
     MESSAGE_SEND_PUSH_BEAR_FAIL = 'PushBear发送失败，请检查KEY'
 
+    MESSAGE_SEND_BARK_SUCCESS = 'Bark推送成功'
+    MESSAGE_SEND_BARK_FAIL = 'Bark推送失败，错误原因 {}'
+
     MESSAGE_OUTPUT_TO_FILE_IS_UN_ENABLE = '请先打开配置项中的：OUT_PUT_LOG_TO_FILE_ENABLED ( 输出到文件 )'
 
     MESSAGE_GET_RESPONSE_FROM_FREE_AUTO_CODE = '从免费打码获取结果失败'
 
     MESSAGE_RESPONSE_EMPTY_ERROR = '网络错误'
+
+    MESSAGE_CDN_START_TO_CHECK = '正在筛选 {} 个 CDN...'
+    MESSAGE_CDN_START_TO_RECHECK = '正在重新筛选 {} 个 CDN...当前时间 {}\n'
+    MESSAGE_CDN_RESTORE_SUCCESS = 'CDN 恢复成功，上次检测 {}\n'
+    MESSAGE_CDN_CHECKED_SUCCESS = '# CDN 检测完成，可用 CDN {} #\n'
+    MESSAGE_CDN_CLOSED = '# CDN 已关闭 #'
 
     def __init__(self):
         super().__init__()
@@ -82,13 +92,17 @@ class CommonLog(BaseLog):
         disable = '未开启'
         self.add_quick_log('**** 当前配置 ****')
         self.add_quick_log('多线程查询: {}'.format(get_true_false_text(Config().QUERY_JOB_THREAD_ENABLED, enable, disable)))
+        self.add_quick_log('CDN 状态: {}'.format(get_true_false_text(Config().CDN_ENABLED, enable, disable))).flush()
+        self.add_quick_log('通知状态:')
         self.add_quick_log(
             '语音验证码: {}'.format(get_true_false_text(Config().NOTIFICATION_BY_VOICE_CODE, enable, disable)))
         self.add_quick_log('邮件通知: {}'.format(get_true_false_text(Config().EMAIL_ENABLED, enable, disable)))
         self.add_quick_log('钉钉通知: {}'.format(get_true_false_text(Config().DINGTALK_ENABLED, enable, disable)))
         self.add_quick_log('Telegram通知: {}'.format(get_true_false_text(Config().TELEGRAM_ENABLED, enable, disable)))
         self.add_quick_log('ServerChan通知: {}'.format(get_true_false_text(Config().SERVERCHAN_ENABLED, enable, disable)))
-        self.add_quick_log('PushBear通知: {}'.format(get_true_false_text(Config().PUSHBEAR_ENABLED, enable, disable)))
+        self.add_quick_log('Bark通知: {}'.format(get_true_false_text(Config().BARK_ENABLED, enable, disable)))
+        self.add_quick_log(
+            'PushBear通知: {}'.format(get_true_false_text(Config().PUSHBEAR_ENABLED, enable, disable))).flush(sep='\t\t')
         self.add_quick_log('查询间隔: {} 秒'.format(Config().QUERY_INTERVAL))
         self.add_quick_log('用户心跳检测间隔: {} 秒'.format(Config().USER_HEARTBEAT_INTERVAL))
         self.add_quick_log('WEB 管理页面: {}'.format(get_true_false_text(Config().WEB_ENABLE, enable, disable)))
